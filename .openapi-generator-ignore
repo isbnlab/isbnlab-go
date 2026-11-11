@@ -1,0 +1,13 @@
+# Hand-maintained; the generator must not overwrite these.
+README.md
+LICENSE
+go.mod
+go.sum
+.gitignore
+.github/**
+.travis.yml
+git_push.sh
+test/**
+testdata/**
+*_test.go
+errors.go

@@ -1,0 +1,1720 @@
+openapi: 3.0.3
+info:
+  contact:
+    email: hello@isbnlab.com
+    name: ISBNLab
+    url: https://www.isbnlab.com/contact-us
+  description: "Book metadata by ISBN: books, editions, covers, authors, publishers,\
+    \ subjects, BISAC genres, and ISBN validation and conversion."
+  termsOfService: https://www.isbnlab.com/terms-of-use
+  title: ISBNLab API
+  version: 1.0.0
+externalDocs:
+  description: API documentation
+  url: https://www.isbnlab.com/api-information
+servers:
+- url: https://www.isbnlab.com
+security:
+- Token: []
+tags:
+- description: "Books, covers, editions and book search."
+  name: Books
+- description: Authors.
+  name: Authors
+- description: Publishers and ISBN registrant prefixes.
+  name: Publishers
+- description: Subjects.
+  name: Subjects
+- description: BISAC genres.
+  name: Genres
+- description: ISBN validation and conversion.
+  name: Isbn
+paths:
+  /api/author/search/{search}:
+    get:
+      operationId: findAuthor
+      parameters:
+      - description: Name to search for.
+        explode: false
+        in: path
+        name: search
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Author"
+          description: Author resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Find an author by name.
+      tags:
+      - Authors
+  /api/author/{id}:
+    get:
+      operationId: getAuthor
+      parameters:
+      - description: Author identifier
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Author"
+          description: Author resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Look up an author by id.
+      tags:
+      - Authors
+  /api/book/asin/{asin}:
+    get:
+      operationId: getBookByAsin
+      parameters:
+      - description: ASIN identifier
+        explode: false
+        in: path
+        name: asin
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+          description: Book resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Look up a book by Amazon ASIN.
+      tags:
+      - Books
+  /api/book/cover/asin/{asin}:
+    get:
+      operationId: getBookCoverByAsin
+      parameters:
+      - description: ASIN identifier
+        explode: false
+        in: path
+        name: asin
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookCover"
+          description: Book Cover resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Get the cover image URLs for a book by ASIN.
+      tags:
+      - Books
+  /api/book/cover/isbn/{isbn}:
+    get:
+      operationId: getBookCoverByIsbn
+      parameters:
+      - description: ISBN identifier
+        explode: false
+        in: path
+        name: isbn
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookCover"
+          description: Book Cover resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Get the cover image URLs for a book by ISBN.
+      tags:
+      - Books
+  /api/book/isbn/{isbn}:
+    get:
+      operationId: getBookByIsbn
+      parameters:
+      - description: ISBN identifier
+        explode: false
+        in: path
+        name: isbn
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+          description: Book resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Look up a book by ISBN-10 or ISBN-13.
+      tags:
+      - Books
+  /api/book/{id}:
+    get:
+      operationId: getBookById
+      parameters:
+      - description: Book identifier
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+          description: Book resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Look up a book by ISBNLab book id.
+      tags:
+      - Books
+  /api/editions/asin/{asin}:
+    get:
+      operationId: getEditionsByAsin
+      parameters:
+      - description: ASIN identifier
+        explode: false
+        in: path
+        name: asin
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookEditions"
+          description: Book Other Editions resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Get every other edition of a book by ASIN.
+      tags:
+      - Books
+  /api/editions/isbn/{isbn}:
+    get:
+      operationId: getEditionsByIsbn
+      parameters:
+      - description: ISBN identifier
+        explode: false
+        in: path
+        name: isbn
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookEditions"
+          description: Book Other Editions resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Get every other edition of a book by ISBN.
+      tags:
+      - Books
+  /api/genre/search/{search}:
+    get:
+      operationId: findGenre
+      parameters:
+      - description: Name to search for.
+        explode: false
+        in: path
+        name: search
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Genre"
+          description: Genre resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Find a BISAC genre by name or BISAC code.
+      tags:
+      - Genres
+  /api/genre/{id}:
+    get:
+      operationId: getGenre
+      parameters:
+      - description: Genre identifier
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Genre"
+          description: Genre resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Look up a BISAC genre by id.
+      tags:
+      - Genres
+  /api/isbn/asin-to-isbn/{asin}:
+    get:
+      operationId: asinToIsbn
+      parameters:
+      - description: ASIN
+        explode: false
+        in: path
+        name: asin
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IsbnDetails"
+          description: ISBN Tools API resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Convert an Amazon ASIN to ISBN.
+      tags:
+      - Isbn
+  /api/isbn/ean-to-isbn/{ean}:
+    get:
+      operationId: eanToIsbn
+      parameters:
+      - description: EAN
+        explode: false
+        in: path
+        name: ean
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IsbnDetails"
+          description: ISBN Tools API resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Convert an EAN to ISBN.
+      tags:
+      - Isbn
+  /api/isbn/isbn-lookup/{isbn}:
+    get:
+      operationId: parseIsbn
+      parameters:
+      - description: ISBN
+        explode: false
+        in: path
+        name: isbn
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IsbnDetails"
+          description: ISBN Tools API resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Validate an ISBN and split it into its parts.
+      tags:
+      - Isbn
+  /api/isbn/isbn-to-asin/{isbn}:
+    get:
+      operationId: isbnToAsin
+      parameters:
+      - description: ISBN
+        explode: false
+        in: path
+        name: isbn
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IsbnDetails"
+          description: ISBN Tools API resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Convert an ISBN to Amazon ASIN.
+      tags:
+      - Isbn
+  /api/isbn/isbn-to-ean/{isbn}:
+    get:
+      operationId: isbnToEan
+      parameters:
+      - description: ISBN
+        explode: false
+        in: path
+        name: isbn
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IsbnDetails"
+          description: ISBN Tools API resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Convert an ISBN to EAN.
+      tags:
+      - Isbn
+  /api/isbn/isbn10-to-isbn13/{isbn10}:
+    get:
+      operationId: isbn10ToIsbn13
+      parameters:
+      - description: ISBN-10
+        explode: false
+        in: path
+        name: isbn10
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IsbnDetails"
+          description: ISBN Tools API resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Convert an ISBN-10 to ISBN-13.
+      tags:
+      - Isbn
+  /api/isbn/isbn13-to-isbn10/{isbn13}:
+    get:
+      operationId: isbn13ToIsbn10
+      parameters:
+      - description: ISBN-13
+        explode: false
+        in: path
+        name: isbn13
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IsbnDetails"
+          description: ISBN Tools API resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Convert an ISBN-13 to ISBN-10.
+      tags:
+      - Isbn
+  /api/publisher/prefix/{prefix}:
+    get:
+      operationId: getPublishersByPrefix
+      parameters:
+      - description: "ISBN registrant prefix, for example 978-0-7653."
+        explode: false
+        in: path
+        name: prefix
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The collection page number
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Publisher"
+                type: array
+          description: Publisher collection
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: List the publishers that use an ISBN registrant prefix.
+      tags:
+      - Publishers
+  /api/publisher/search/{search}:
+    get:
+      operationId: findPublisher
+      parameters:
+      - description: Name to search for.
+        explode: false
+        in: path
+        name: search
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Publisher"
+          description: Publisher resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Find a publisher by name.
+      tags:
+      - Publishers
+  /api/publisher/{id}:
+    get:
+      operationId: getPublisher
+      parameters:
+      - description: Publisher identifier
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Publisher"
+          description: Publisher resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Look up a publisher by id.
+      tags:
+      - Publishers
+  /api/search/book/{query}:
+    get:
+      operationId: searchBooks
+      parameters:
+      - description: Search text
+        explode: false
+        in: path
+        name: query
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: "Books per page, 1-100. Default 10."
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      - description: "Page number, starting at 1. Default 1."
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          maximum: 10000
+          minimum: 1
+          type: integer
+        style: form
+      - description: Maximum number of results across all pages. Default 100.
+        explode: true
+        in: query
+        name: max_results
+        required: false
+        schema:
+          default: 100
+          minimum: 1
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Book"
+                type: array
+          description: Book collection
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: "Search books by title, subtitle, author or ISBN."
+      tags:
+      - Books
+  /api/subject/search/{search}:
+    get:
+      operationId: findSubject
+      parameters:
+      - description: Name to search for.
+        explode: false
+        in: path
+        name: search
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Subject"
+          description: Subject resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Find a subject by name.
+      tags:
+      - Subjects
+  /api/subject/{id}:
+    get:
+      operationId: getSubject
+      parameters:
+      - description: Subject identifier
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Subject"
+          description: Subject resource
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too Many Requests
+      security:
+      - Token: []
+      - UrlKey: []
+      summary: Look up a subject by id.
+      tags:
+      - Subjects
+components:
+  schemas:
+    Author:
+      example:
+        alternativeNames:
+        - alternativeNames
+        - alternativeNames
+        name: name
+        deathDate: 2000-01-23T04:56:07.000+00:00
+        bio: bio
+        birthDate: 2000-01-23T04:56:07.000+00:00
+        photos:
+        - license: license
+          width: 0
+          credit: credit
+          url: url
+          license_url: license_url
+          height: 6
+        - license: license
+          width: 0
+          credit: credit
+          url: url
+          license_url: license_url
+          height: 6
+        slug: slug
+      properties:
+        name:
+          nullable: true
+          type: string
+        slug:
+          nullable: true
+          type: string
+        alternativeNames:
+          items:
+            type: string
+          nullable: true
+          type: array
+        deathDate:
+          format: date-time
+          nullable: true
+          type: string
+        birthDate:
+          format: date-time
+          nullable: true
+          type: string
+        bio:
+          nullable: true
+          type: string
+        photos:
+          items:
+            $ref: "#/components/schemas/AuthorPhoto"
+          nullable: true
+          type: array
+      type: object
+    AuthorPhoto:
+      example:
+        license: license
+        width: 0
+        credit: credit
+        url: url
+        license_url: license_url
+        height: 6
+      properties:
+        url:
+          nullable: true
+          type: string
+        width:
+          nullable: true
+          type: integer
+        height:
+          nullable: true
+          type: integer
+        credit:
+          nullable: true
+          type: string
+        license:
+          nullable: true
+          type: string
+        license_url:
+          nullable: true
+          type: string
+      type: object
+    Book:
+      example:
+        nextEdition: ""
+        imprint:
+        - name: name
+          id: 5
+          slug: slug
+        - name: name
+          id: 5
+          slug: slug
+        publishDate: 2000-01-23T04:56:07.000+00:00
+        link: link
+        description: description
+        retailLinks:
+        - retailer: retailer
+          url: url
+        - retailer: retailer
+          url: url
+        language: language
+        title: title
+        physicalDimensions: physicalDimensions
+        isbnModel: ""
+        numberOfPages: 1
+        reviewQuotes: reviewQuotes
+        genres:
+        - name: name
+          id: 5
+          slug: slug
+        - name: name
+          id: 5
+          slug: slug
+        ratings: ""
+        aiSummary: aiSummary
+        publishers:
+        - name: name
+          id: 5
+          slug: slug
+        - name: name
+          id: 5
+          slug: slug
+        canonicalEditionId: 3
+        id: 0
+        categories:
+        - name: name
+          id: 9
+          uri: uri
+        - name: name
+          id: 9
+          uri: uri
+        estimatedReadTime: 2
+        previousEdition: ""
+        covers:
+        - covers
+        - covers
+        subjects:
+        - inherited: true
+          name: name
+          id: 2
+          slug: slug
+        - inherited: true
+          name: name
+          id: 2
+          slug: slug
+        physicalFormat: physicalFormat
+        languagesCount: 4
+        saleStatus: saleStatus
+        languageCode: languageCode
+        workId: 6
+        otherEditions:
+        - pages: 7
+          isbn13: isbn13
+          imprint: imprint
+          isbn10: isbn10
+          physicalFormat: physicalFormat
+          published: published
+          title: title
+          slug: slug
+        - pages: 7
+          isbn13: isbn13
+          imprint: imprint
+          isbn10: isbn10
+          physicalFormat: physicalFormat
+          published: published
+          title: title
+          slug: slug
+        publishDatePrecision: year
+        series: ""
+        isbn13: isbn13
+        subtitle: subtitle
+        isbn10: isbn10
+        contributors:
+        - role: translator
+          name: name
+          id: 5
+          slug: slug
+        - role: translator
+          name: name
+          id: 5
+          slug: slug
+        excerpt: excerpt
+        authors:
+        - name: name
+          id: 5
+          slug: slug
+        - name: name
+          id: 5
+          slug: slug
+      properties:
+        id:
+          nullable: true
+          readOnly: true
+          type: integer
+        isbn10:
+          nullable: true
+          type: string
+        isbn13:
+          nullable: true
+          type: string
+        workId:
+          nullable: true
+          type: integer
+        title:
+          nullable: true
+          type: string
+        subtitle:
+          nullable: true
+          type: string
+        numberOfPages:
+          nullable: true
+          type: integer
+        description:
+          nullable: true
+          type: string
+        publishers:
+          items:
+            $ref: "#/components/schemas/EntityRef"
+          nullable: true
+          type: array
+        imprint:
+          items:
+            $ref: "#/components/schemas/EntityRef"
+          nullable: true
+          type: array
+        publishDate:
+          format: date-time
+          nullable: true
+          type: string
+        physicalFormat:
+          nullable: true
+          type: string
+        covers:
+          items:
+            type: string
+          nullable: true
+          type: array
+        authors:
+          items:
+            $ref: "#/components/schemas/EntityRef"
+          nullable: true
+          type: array
+        contributors:
+          items:
+            $ref: "#/components/schemas/Contributor"
+          nullable: true
+          type: array
+        subjects:
+          items:
+            $ref: "#/components/schemas/SubjectRef"
+          nullable: true
+          type: array
+        series:
+          allOf:
+          - $ref: "#/components/schemas/Series"
+          nullable: true
+        genres:
+          items:
+            $ref: "#/components/schemas/EntityRef"
+          nullable: true
+          type: array
+        otherEditions:
+          items:
+            $ref: "#/components/schemas/EditionRef"
+          nullable: true
+          type: array
+        previousEdition:
+          allOf:
+          - $ref: "#/components/schemas/EditionRef"
+          nullable: true
+        nextEdition:
+          allOf:
+          - $ref: "#/components/schemas/EditionRef"
+          nullable: true
+        physicalDimensions:
+          nullable: true
+          type: string
+        ratings:
+          allOf:
+          - $ref: "#/components/schemas/Ratings"
+          nullable: true
+        language:
+          nullable: true
+          type: string
+        saleStatus:
+          nullable: true
+          type: string
+        excerpt:
+          nullable: true
+          type: string
+        reviewQuotes:
+          nullable: true
+          type: string
+        retailLinks:
+          items:
+            $ref: "#/components/schemas/RetailLink"
+          nullable: true
+          type: array
+        categories:
+          items:
+            $ref: "#/components/schemas/Category"
+          nullable: true
+          type: array
+        aiSummary:
+          nullable: true
+          type: string
+        canonicalEditionId:
+          nullable: true
+          type: integer
+        languageCode:
+          nullable: true
+          type: string
+        publishDatePrecision:
+          enum:
+          - year
+          - month
+          - day
+          nullable: true
+          type: string
+        estimatedReadTime:
+          nullable: true
+          type: integer
+        languagesCount:
+          nullable: true
+          type: integer
+        link:
+          nullable: true
+          type: string
+        isbnModel:
+          allOf:
+          - $ref: "#/components/schemas/IsbnDetails"
+          nullable: true
+      type: object
+    BookCover:
+      example:
+        isbn13: isbn13
+        covers:
+        - covers
+        - covers
+      properties:
+        isbn13:
+          nullable: true
+          type: string
+        covers:
+          items:
+            type: string
+          nullable: true
+          type: array
+      type: object
+    BookEditions:
+      example:
+        nextEdition: ""
+        isbn13: isbn13
+        otherEditions:
+        - pages: 7
+          isbn13: isbn13
+          imprint: imprint
+          isbn10: isbn10
+          physicalFormat: physicalFormat
+          published: published
+          title: title
+          slug: slug
+        - pages: 7
+          isbn13: isbn13
+          imprint: imprint
+          isbn10: isbn10
+          physicalFormat: physicalFormat
+          published: published
+          title: title
+          slug: slug
+        previousEdition: ""
+      properties:
+        isbn13:
+          nullable: true
+          type: string
+        otherEditions:
+          items:
+            $ref: "#/components/schemas/EditionRef"
+          nullable: true
+          type: array
+        previousEdition:
+          allOf:
+          - $ref: "#/components/schemas/EditionRef"
+          nullable: true
+        nextEdition:
+          allOf:
+          - $ref: "#/components/schemas/EditionRef"
+          nullable: true
+      type: object
+    Category:
+      example:
+        name: name
+        id: 9
+        uri: uri
+      properties:
+        id:
+          nullable: true
+          type: integer
+        name:
+          nullable: true
+          type: string
+        uri:
+          nullable: true
+          type: string
+      type: object
+    Contributor:
+      example:
+        role: translator
+        name: name
+        id: 5
+        slug: slug
+      properties:
+        id:
+          nullable: true
+          type: integer
+        slug:
+          nullable: true
+          type: string
+        name:
+          nullable: true
+          type: string
+        role:
+          enum:
+          - translator
+          - illustrator
+          - editor
+          - narrator
+          - introduction
+          - photographer
+          nullable: true
+          type: string
+      type: object
+    EditionRef:
+      example:
+        pages: 7
+        isbn13: isbn13
+        imprint: imprint
+        isbn10: isbn10
+        physicalFormat: physicalFormat
+        published: published
+        title: title
+        slug: slug
+      properties:
+        isbn10:
+          nullable: true
+          type: string
+        isbn13:
+          nullable: true
+          type: string
+        title:
+          nullable: true
+          type: string
+        slug:
+          nullable: true
+          type: string
+        published:
+          nullable: true
+          type: string
+        physicalFormat:
+          nullable: true
+          type: string
+        pages:
+          nullable: true
+          type: integer
+        imprint:
+          nullable: true
+          type: string
+      type: object
+    EntityRef:
+      example:
+        name: name
+        id: 5
+        slug: slug
+      properties:
+        id:
+          nullable: true
+          type: integer
+        slug:
+          nullable: true
+          type: string
+        name:
+          nullable: true
+          type: string
+      type: object
+    Genre:
+      example:
+        editionCount: 0
+        bisacCode: bisacCode
+        name: name
+      properties:
+        bisacCode:
+          nullable: true
+          type: string
+        name:
+          nullable: true
+          type: string
+        editionCount:
+          nullable: true
+          type: integer
+      type: object
+    IsbnDetails:
+      example:
+        prefix: prefix
+        registrationGroupName: registrationGroupName
+        isbn10Formatted: isbn10Formatted
+        ean: ean
+        isbn13Formatted: isbn13Formatted
+        isbn13: isbn13
+        publication: publication
+        isbn10: isbn10
+        asin: asin
+        id: id
+        registrant: registrant
+        groupIdentifier: groupIdentifier
+        checkDigit: checkDigit
+        registrationGroup: registrationGroup
+      properties:
+        id:
+          nullable: true
+          type: string
+        isbn10:
+          nullable: true
+          type: string
+        isbn10Formatted:
+          nullable: true
+          type: string
+        isbn13:
+          nullable: true
+          type: string
+        isbn13Formatted:
+          nullable: true
+          type: string
+        ean:
+          nullable: true
+          type: string
+        asin:
+          nullable: true
+          type: string
+        prefix:
+          nullable: true
+          type: string
+        registrationGroup:
+          nullable: true
+          type: string
+        registrationGroupName:
+          nullable: true
+          type: string
+        groupIdentifier:
+          nullable: true
+          type: string
+        registrant:
+          nullable: true
+          type: string
+        publication:
+          nullable: true
+          type: string
+        checkDigit:
+          nullable: true
+          type: string
+      type: object
+    OtherSeries:
+      properties:
+        id:
+          nullable: true
+          type: integer
+        identifier:
+          nullable: true
+          type: string
+        slug:
+          nullable: true
+          type: string
+        name:
+          nullable: true
+          type: string
+        number:
+          nullable: true
+          type: integer
+        kind:
+          enum:
+          - story
+          - collection
+          - unknown
+          nullable: true
+          type: string
+        parent:
+          allOf:
+          - $ref: "#/components/schemas/SeriesParent"
+          nullable: true
+      type: object
+    Publisher:
+      example:
+        country: country
+        prefix: prefix
+        editionCount: 0
+        name: name
+        url: url
+        slug: slug
+      properties:
+        name:
+          nullable: true
+          type: string
+        prefix:
+          nullable: true
+          type: string
+        country:
+          nullable: true
+          type: string
+        url:
+          nullable: true
+          type: string
+        slug:
+          nullable: true
+          type: string
+        editionCount:
+          nullable: true
+          type: integer
+      type: object
+    RatingCounts:
+      properties:
+        "1":
+          nullable: true
+          type: integer
+        "2":
+          nullable: true
+          type: integer
+        "3":
+          nullable: true
+          type: integer
+        "4":
+          nullable: true
+          type: integer
+        "5":
+          nullable: true
+          type: integer
+      type: object
+    RatingSummary:
+      properties:
+        average:
+          nullable: true
+          type: number
+        count:
+          nullable: true
+          type: integer
+        sum:
+          nullable: true
+          type: integer
+      type: object
+    Ratings:
+      properties:
+        summary:
+          allOf:
+          - $ref: "#/components/schemas/RatingSummary"
+          nullable: true
+        counts:
+          allOf:
+          - $ref: "#/components/schemas/RatingCounts"
+          nullable: true
+      type: object
+    RetailLink:
+      example:
+        retailer: retailer
+        url: url
+      properties:
+        retailer:
+          nullable: true
+          type: string
+        url:
+          nullable: true
+          type: string
+      type: object
+    Series:
+      properties:
+        id:
+          nullable: true
+          type: integer
+        identifier:
+          nullable: true
+          type: string
+        slug:
+          nullable: true
+          type: string
+        name:
+          nullable: true
+          type: string
+        number:
+          nullable: true
+          type: integer
+        kind:
+          enum:
+          - story
+          - collection
+          - unknown
+          nullable: true
+          type: string
+        parent:
+          allOf:
+          - $ref: "#/components/schemas/SeriesParent"
+          nullable: true
+        otherSeries:
+          items:
+            $ref: "#/components/schemas/OtherSeries"
+          nullable: true
+          type: array
+        previousBook:
+          allOf:
+          - $ref: "#/components/schemas/SeriesBook"
+          nullable: true
+        nextBook:
+          allOf:
+          - $ref: "#/components/schemas/SeriesBook"
+          nullable: true
+      type: object
+    SeriesBook:
+      properties:
+        isbn10:
+          nullable: true
+          type: string
+        isbn13:
+          nullable: true
+          type: string
+        title:
+          nullable: true
+          type: string
+        slug:
+          nullable: true
+          type: string
+        number:
+          nullable: true
+          type: integer
+        workId:
+          nullable: true
+          type: integer
+        workSlug:
+          nullable: true
+          type: string
+      type: object
+    SeriesParent:
+      properties:
+        id:
+          nullable: true
+          type: integer
+        slug:
+          nullable: true
+          type: string
+        name:
+          nullable: true
+          type: string
+      type: object
+    Subject:
+      example:
+        firstChar: firstChar
+        identifier: identifier
+        editionCount: 0
+        name: name
+        slug: slug
+      properties:
+        name:
+          nullable: true
+          type: string
+        identifier:
+          nullable: true
+          type: string
+        slug:
+          nullable: true
+          type: string
+        firstChar:
+          nullable: true
+          type: string
+        editionCount:
+          nullable: true
+          type: integer
+      type: object
+    SubjectRef:
+      example:
+        inherited: true
+        name: name
+        id: 2
+        slug: slug
+      properties:
+        id:
+          nullable: true
+          type: integer
+        slug:
+          nullable: true
+          type: string
+        name:
+          nullable: true
+          type: string
+        inherited:
+          nullable: true
+          type: boolean
+      type: object
+  securitySchemes:
+    Token:
+      description: Your ISBNLab API token.
+      scheme: bearer
+      type: http
+    UrlKey:
+      description: "A URL key, sent as the access_token query parameter. GET requests\
+        \ only."
+      in: query
+      name: access_token
+      type: apiKey
