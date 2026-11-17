@@ -6,6 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Isbn13** | Pointer to **NullableString** |  | [optional] 
 **Covers** | Pointer to **[]string** |  | [optional] 
+**Sizes** | Pointer to [**[]CoverSize**](CoverSize.md) |  | [optional] 
 
 ## Methods
 
@@ -96,6 +97,41 @@ HasCovers returns a boolean if a field has been set.
 `func (o *BookCover) UnsetCovers()`
 
 UnsetCovers ensures that no value is present for Covers, not even an explicit nil
+### GetSizes
+
+`func (o *BookCover) GetSizes() []CoverSize`
+
+GetSizes returns the Sizes field if non-nil, zero value otherwise.
+
+### GetSizesOk
+
+`func (o *BookCover) GetSizesOk() (*[]CoverSize, bool)`
+
+GetSizesOk returns a tuple with the Sizes field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSizes
+
+`func (o *BookCover) SetSizes(v []CoverSize)`
+
+SetSizes sets Sizes field to given value.
+
+### HasSizes
+
+`func (o *BookCover) HasSizes() bool`
+
+HasSizes returns a boolean if a field has been set.
+
+### SetSizesNil
+
+`func (o *BookCover) SetSizesNil(b bool)`
+
+ SetSizesNil sets the value for Sizes to be an explicit nil
+
+### UnsetSizes
+`func (o *BookCover) UnsetSizes()`
+
+UnsetSizes ensures that no value is present for Sizes, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

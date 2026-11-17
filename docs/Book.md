@@ -41,6 +41,7 @@ Name | Type | Description | Notes
 **LanguagesCount** | Pointer to **NullableInt64** |  | [optional] 
 **Link** | Pointer to **NullableString** |  | [optional] 
 **IsbnModel** | Pointer to [**NullableIsbnDetails**](IsbnDetails.md) |  | [optional] 
+**OtherEditionsCount** | Pointer to **NullableInt64** |  | [optional] [readonly] 
 
 ## Methods
 
@@ -1356,6 +1357,41 @@ HasIsbnModel returns a boolean if a field has been set.
 `func (o *Book) UnsetIsbnModel()`
 
 UnsetIsbnModel ensures that no value is present for IsbnModel, not even an explicit nil
+### GetOtherEditionsCount
+
+`func (o *Book) GetOtherEditionsCount() int64`
+
+GetOtherEditionsCount returns the OtherEditionsCount field if non-nil, zero value otherwise.
+
+### GetOtherEditionsCountOk
+
+`func (o *Book) GetOtherEditionsCountOk() (*int64, bool)`
+
+GetOtherEditionsCountOk returns a tuple with the OtherEditionsCount field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetOtherEditionsCount
+
+`func (o *Book) SetOtherEditionsCount(v int64)`
+
+SetOtherEditionsCount sets OtherEditionsCount field to given value.
+
+### HasOtherEditionsCount
+
+`func (o *Book) HasOtherEditionsCount() bool`
+
+HasOtherEditionsCount returns a boolean if a field has been set.
+
+### SetOtherEditionsCountNil
+
+`func (o *Book) SetOtherEditionsCountNil(b bool)`
+
+ SetOtherEditionsCountNil sets the value for OtherEditionsCount to be an explicit nil
+
+### UnsetOtherEditionsCount
+`func (o *Book) UnsetOtherEditionsCount()`
+
+UnsetOtherEditionsCount ensures that no value is present for OtherEditionsCount, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

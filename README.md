@@ -41,9 +41,7 @@ func main() {
 	fmt.Println(book.GetAuthors()[0].GetName()) // Robert Jordan
 	fmt.Println(book.GetPublishDate().Year())
 
-	for _, edition := range book.GetOtherEditions() {
-		fmt.Println(edition.GetIsbn13(), edition.GetTitle())
-	}
+	fmt.Println(book.GetOtherEditionsCount(), "other editions")
 }
 ```
 
@@ -74,6 +72,36 @@ if err != nil {
 	log.Fatal(err)
 }
 fmt.Println(author.GetBio())
+```
+
+### Fields that depend on your plan
+
+A book lookup lists the other editions (`GetOtherEditions()`, `GetPreviousEdition()`, `GetNextEdition()`) on the Pro plan. On the Free and Standard plans those fields are empty, `GetOtherEditionsCount()` still gives the number of other editions, and two response headers name what was left out: `X-Plan-Restricted-Fields` lists the fields and `X-Plan-Upgrade` links to the plans. `isbnlab.IsRestricted`, `isbnlab.RestrictedFields` and `isbnlab.UpgradeURL` read them from the `*http.Response`:
+
+```go
+book, response, err := client.BooksAPI.GetBookByIsbn(ctx, "9780765302304").Execute()
+if err != nil {
+	log.Fatal(err)
+}
+if isbnlab.IsRestricted(response, "otherEditions") {
+	fmt.Println(book.GetOtherEditionsCount(), "other editions; see", isbnlab.UpgradeURL(response))
+} else {
+	for _, edition := range book.GetOtherEditions() {
+		fmt.Println(edition.GetIsbn13(), edition.GetTitle())
+	}
+}
+```
+
+`isbnlab.RestrictedFields(response)` returns every field that was left out, for example `[otherEditions previousEdition nextEdition]`, or `nil` when the response is complete.
+
+A cover lookup (Standard or Pro) gives each cover image's URL in `GetCovers()`, and in `GetSizes()` the same image 200, 400 and 800 pixels wide (`GetW200()`, `GetW400()`, `GetW800()`); a width is `""` when that size is not available.
+
+```go
+cover, _, err := client.BooksAPI.GetBookCoverByIsbn(ctx, "9780765302304").Execute()
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Println(cover.GetSizes()[0].GetW400()) // https://covers.isbnlab.com/w400/9780765302304.jpg
 ```
 
 ## Errors
@@ -118,7 +146,7 @@ Reference for every method and model: [docs/](docs/). Field-by-field documentati
 
 ## Development
 
-The `api_*.go`, `model_*.go`, `client.go`, `configuration.go`, `response.go` and `utils.go` files and `docs/` are generated from the API's [OpenAPI document](https://www.isbnlab.com/api/docs.jsonopenapi) with [OpenAPI Generator](https://openapi-generator.tech/), so changes to them are made in the generator and arrive with the next release; please open an issue rather than a pull request for those files. `README.md`, `errors.go`, `go.mod` and the tests are maintained by hand; `example_test.go` holds this README's examples, so `go test` checks they compile.
+The `api_*.go`, `model_*.go`, `client.go`, `configuration.go`, `response.go` and `utils.go` files and `docs/` are generated from the API's [OpenAPI document](https://www.isbnlab.com/api/docs.jsonopenapi) with [OpenAPI Generator](https://openapi-generator.tech/), so changes to them are made in the generator and arrive with the next release; please open an issue rather than a pull request for those files. `README.md`, `errors.go`, `plan.go`, `go.mod` and the tests are maintained by hand; `example_test.go` holds this README's examples, so `go test` checks they compile.
 
 ```bash
 go vet ./...

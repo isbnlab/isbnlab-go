@@ -1086,6 +1086,7 @@ components:
         series: ""
         isbn13: isbn13
         subtitle: subtitle
+        otherEditionsCount: 7
         isbn10: isbn10
         contributors:
         - role: translator
@@ -1247,9 +1248,22 @@ components:
           allOf:
           - $ref: "#/components/schemas/IsbnDetails"
           nullable: true
+        otherEditionsCount:
+          nullable: true
+          readOnly: true
+          type: integer
       type: object
     BookCover:
       example:
+        sizes:
+        - w800: w800
+          w400: w400
+          w200: w200
+          url: url
+        - w800: w800
+          w400: w400
+          w200: w200
+          url: url
         isbn13: isbn13
         covers:
         - covers
@@ -1261,6 +1275,11 @@ components:
         covers:
           items:
             type: string
+          nullable: true
+          type: array
+        sizes:
+          items:
+            $ref: "#/components/schemas/CoverSize"
           nullable: true
           type: array
       type: object
@@ -1344,6 +1363,26 @@ components:
           - narrator
           - introduction
           - photographer
+          nullable: true
+          type: string
+      type: object
+    CoverSize:
+      example:
+        w800: w800
+        w400: w400
+        w200: w200
+        url: url
+      properties:
+        url:
+          nullable: true
+          type: string
+        w200:
+          nullable: true
+          type: string
+        w400:
+          nullable: true
+          type: string
+        w800:
           nullable: true
           type: string
       type: object

@@ -58,6 +58,7 @@ type Book struct {
 	LanguagesCount       NullableInt64       `json:"languagesCount,omitempty"`
 	Link                 NullableString      `json:"link,omitempty"`
 	IsbnModel            NullableIsbnDetails `json:"isbnModel,omitempty"`
+	OtherEditionsCount   NullableInt64       `json:"otherEditionsCount,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -1571,6 +1572,49 @@ func (o *Book) UnsetIsbnModel() {
 	o.IsbnModel.Unset()
 }
 
+// GetOtherEditionsCount returns the OtherEditionsCount field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Book) GetOtherEditionsCount() int64 {
+	if o == nil || IsNil(o.OtherEditionsCount.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.OtherEditionsCount.Get()
+}
+
+// GetOtherEditionsCountOk returns a tuple with the OtherEditionsCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Book) GetOtherEditionsCountOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.OtherEditionsCount.Get(), o.OtherEditionsCount.IsSet()
+}
+
+// HasOtherEditionsCount returns a boolean if a field has been set.
+func (o *Book) HasOtherEditionsCount() bool {
+	if o != nil && o.OtherEditionsCount.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetOtherEditionsCount gets a reference to the given NullableInt64 and assigns it to the OtherEditionsCount field.
+func (o *Book) SetOtherEditionsCount(v int64) {
+	o.OtherEditionsCount.Set(&v)
+}
+
+// SetOtherEditionsCountNil sets the value for OtherEditionsCount to be an explicit nil
+func (o *Book) SetOtherEditionsCountNil() {
+	o.OtherEditionsCount.Set(nil)
+}
+
+// UnsetOtherEditionsCount ensures that no value is present for OtherEditionsCount, not even an explicit nil
+func (o *Book) UnsetOtherEditionsCount() {
+	o.OtherEditionsCount.Unset()
+}
+
 func (o Book) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -1692,6 +1736,9 @@ func (o Book) ToMap() (map[string]interface{}, error) {
 	if o.IsbnModel.IsSet() {
 		toSerialize["isbnModel"] = o.IsbnModel.Get()
 	}
+	if o.OtherEditionsCount.IsSet() {
+		toSerialize["otherEditionsCount"] = o.OtherEditionsCount.Get()
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -1751,6 +1798,7 @@ func (o *Book) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "languagesCount")
 		delete(additionalProperties, "link")
 		delete(additionalProperties, "isbnModel")
+		delete(additionalProperties, "otherEditionsCount")
 		o.AdditionalProperties = additionalProperties
 	}
 

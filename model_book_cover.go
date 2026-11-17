@@ -22,6 +22,7 @@ var _ MappedNullable = &BookCover{}
 type BookCover struct {
 	Isbn13               NullableString `json:"isbn13,omitempty"`
 	Covers               []string       `json:"covers,omitempty"`
+	Sizes                []CoverSize    `json:"sizes,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -120,6 +121,39 @@ func (o *BookCover) SetCovers(v []string) {
 	o.Covers = v
 }
 
+// GetSizes returns the Sizes field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *BookCover) GetSizes() []CoverSize {
+	if o == nil {
+		var ret []CoverSize
+		return ret
+	}
+	return o.Sizes
+}
+
+// GetSizesOk returns a tuple with the Sizes field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *BookCover) GetSizesOk() ([]CoverSize, bool) {
+	if o == nil || IsNil(o.Sizes) {
+		return nil, false
+	}
+	return o.Sizes, true
+}
+
+// HasSizes returns a boolean if a field has been set.
+func (o *BookCover) HasSizes() bool {
+	if o != nil && !IsNil(o.Sizes) {
+		return true
+	}
+
+	return false
+}
+
+// SetSizes gets a reference to the given []CoverSize and assigns it to the Sizes field.
+func (o *BookCover) SetSizes(v []CoverSize) {
+	o.Sizes = v
+}
+
 func (o BookCover) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -135,6 +169,9 @@ func (o BookCover) ToMap() (map[string]interface{}, error) {
 	}
 	if o.Covers != nil {
 		toSerialize["covers"] = o.Covers
+	}
+	if o.Sizes != nil {
+		toSerialize["sizes"] = o.Sizes
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -160,6 +197,7 @@ func (o *BookCover) UnmarshalJSON(data []byte) (err error) {
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "isbn13")
 		delete(additionalProperties, "covers")
+		delete(additionalProperties, "sizes")
 		o.AdditionalProperties = additionalProperties
 	}
 

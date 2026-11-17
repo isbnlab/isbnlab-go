@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"slices"
 	"testing"
 
 	isbnlab "github.com/isbnlab/isbnlab-go"
@@ -23,6 +24,12 @@ type recorded struct {
 // every request with the given status and testdata file (or raw body).
 func newClient(t *testing.T, status int, fixture, rawBody string) (*isbnlab.APIClient, context.Context, *recorded) {
 	t.Helper()
+	return newClientWithHeaders(t, status, fixture, rawBody, nil)
+}
+
+// newClientWithHeaders is newClient with extra response headers.
+func newClientWithHeaders(t *testing.T, status int, fixture, rawBody string, headers map[string]string) (*isbnlab.APIClient, context.Context, *recorded) {
+	t.Helper()
 	body := []byte(rawBody)
 	if fixture != "" {
 		var err error
@@ -35,6 +42,9 @@ func newClient(t *testing.T, status int, fixture, rawBody string) (*isbnlab.APIC
 		rec.path, rec.query = r.URL.EscapedPath(), r.URL.RawQuery
 		rec.auth, rec.accept = r.Header.Get("Authorization"), r.Header.Get("Accept")
 		w.Header().Set("Content-Type", "application/json")
+		for name, value := range headers {
+			w.Header()[name] = []string{value}
+		}
 		w.WriteHeader(status)
 		_, _ = w.Write(body)
 	}))
@@ -154,6 +164,29 @@ func TestBookCoverAndEditions(t *testing.T) {
 	if len(cover.GetCovers()) == 0 {
 		t.Error("no covers")
 	}
+	sizes := cover.GetSizes()
+	if len(sizes) != len(cover.GetCovers()) || sizes[0].GetUrl() != cover.GetCovers()[0] {
+		t.Errorf("sizes = %+v", sizes)
+	}
+	if got := sizes[0].GetW200(); got != "https://covers.isbnlab.com/w200/9780765302304.jpg" {
+		t.Errorf("w200 = %q", got)
+	}
+	if got := sizes[1].GetW800(); got != "https://covers.isbnlab.com/w800/9780765302304-01.jpg" {
+		t.Errorf("w800 = %q", got)
+	}
+
+	client, ctx, _ = newClient(t, 200, "book-cover-elsewhere.json", "")
+	elsewhere, _, err := client.BooksAPI.GetBookCoverByIsbn(ctx, "9780765302304").Execute()
+	if err != nil {
+		t.Fatal(err)
+	}
+	other := elsewhere.GetSizes()[1]
+	if other.GetUrl() != "https://example.com/elsewhere.jpg" {
+		t.Errorf("url = %q", other.GetUrl())
+	}
+	if w, ok := other.GetW400Ok(); w != nil || other.GetW200() != "" || other.GetW800() != "" {
+		t.Errorf("widths of an image elsewhere = %v %v, want null", w, ok)
+	}
 
 	client, ctx, rec = newClient(t, 200, "book-editions.json", "")
 	editions, _, err := client.BooksAPI.GetEditionsByIsbn(ctx, "9780765302304").Execute()
@@ -245,5 +278,61 @@ func TestErrorsCarryStatusAndDetail(t *testing.T) {
 		if got := isbnlab.ErrorDetail(err); got != tc.detail {
 			t.Errorf("%d: detail = %q, want %q", tc.status, got, tc.detail)
 		}
+	}
+}
+
+func TestTheEditionCountComesWithEveryBook(t *testing.T) {
+	client, ctx, _ := newClient(t, 200, "book.json", "")
+	book, _, err := client.BooksAPI.GetBookByIsbn(ctx, "9780765302304").Execute()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := book.GetOtherEditionsCount(); got != int64(len(book.GetOtherEditions())) {
+		t.Errorf("otherEditionsCount = %d, want %d", got, len(book.GetOtherEditions()))
+	}
+}
+
+func TestAPlanWithoutEditionLinksGetsTheCountAndTheRestrictionHeaders(t *testing.T) {
+	// Lowercase, as they arrive over HTTP/2.
+	client, ctx, _ := newClientWithHeaders(t, 200, "book-free.json", "", map[string]string{
+		"x-plan-restricted-fields": "otherEditions, previousEdition, nextEdition",
+		"x-plan-upgrade":           "https://www.isbnlab.com/pricing",
+	})
+	book, resp, err := client.BooksAPI.GetBookByIsbn(ctx, "9780765302304").Execute()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if book.GetOtherEditions() != nil || book.PreviousEdition.Get() != nil || book.NextEdition.Get() != nil {
+		t.Errorf("edition links = %v %v %v, want null", book.OtherEditions, book.PreviousEdition, book.NextEdition)
+	}
+	if got := book.GetOtherEditionsCount(); got != 2 {
+		t.Errorf("otherEditionsCount = %d", got)
+	}
+	want := []string{"otherEditions", "previousEdition", "nextEdition"}
+	if got := isbnlab.RestrictedFields(resp); !slices.Equal(got, want) {
+		t.Errorf("RestrictedFields = %q, want %q", got, want)
+	}
+	if !isbnlab.IsRestricted(resp, "nextEdition") || isbnlab.IsRestricted(resp, "title") {
+		t.Error("IsRestricted")
+	}
+	if got := isbnlab.UpgradeURL(resp); got != "https://www.isbnlab.com/pricing" {
+		t.Errorf("UpgradeURL = %q", got)
+	}
+}
+
+func TestAFullResponseHasNoRestrictedFields(t *testing.T) {
+	client, ctx, _ := newClient(t, 200, "book.json", "")
+	_, resp, err := client.BooksAPI.GetBookByIsbn(ctx, "9780765302304").Execute()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := isbnlab.RestrictedFields(resp); got != nil {
+		t.Errorf("RestrictedFields = %q, want none", got)
+	}
+	if got := isbnlab.UpgradeURL(resp); got != "" {
+		t.Errorf("UpgradeURL = %q, want none", got)
+	}
+	if isbnlab.RestrictedFields(nil) != nil || isbnlab.UpgradeURL(nil) != "" {
+		t.Error("a nil response should have no restrictions")
 	}
 }

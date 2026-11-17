@@ -11,3 +11,4 @@ test/**
 testdata/**
 *_test.go
 errors.go
+plan.go

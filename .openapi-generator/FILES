@@ -16,6 +16,7 @@ docs/BookEditions.md
 docs/BooksAPI.md
 docs/Category.md
 docs/Contributor.md
+docs/CoverSize.md
 docs/EditionRef.md
 docs/EntityRef.md
 docs/Genre.md
@@ -42,6 +43,7 @@ model_book_cover.go
 model_book_editions.go
 model_category.go
 model_contributor.go
+model_cover_size.go
 model_edition_ref.go
 model_entity_ref.go
 model_genre.go
